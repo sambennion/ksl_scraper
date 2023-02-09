@@ -74,7 +74,7 @@ print('KSL Listings:')
 s3 = boto3.resource("s3")
 bucket_name = "bennion-selenium"
 
-file_name = "selenium-log-" + time.strftime("%Y-%m%d-%H%M%S")
+file_name = "selenium-log-" + time.strftime("%Y-%m%d-%H%M%S") + ".txt"
 for lnk in lnks:
    with open(file_name, "a") as file:
     file.write(lnk.text + "\n")
