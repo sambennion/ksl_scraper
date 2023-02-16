@@ -71,15 +71,25 @@ lnks = driver.find_elements("xpath", "//div[@class='item-info-title-link']/a")
 print('Number of links = ' + str(len(lnks)))
 #breakpoint()
 print('KSL Listings:')
-s3 = boto3.resource("s3")
-bucket_name = "bennion-selenium"
+# s3 = boto3.resource("s3")
+
+client = boto3.client('sqs')
+
+
+# bucket_name = "bennion-selenium"
 
 file_name = "selenium-log-" + time.strftime("%Y-%m%d-%H%M%S") + ".txt"
+links_string = ""
 for lnk in lnks:
    with open(file_name, "a") as file:
     file.write(lnk.text + "\n")
    print(lnk.text)
-s3.Bucket(bucket_name).upload_file(file_name, file_name)
+   links_string += lnk.text + "\n"
+# s3.Bucket(bucket_name).upload_file(file_name, file_name)
+message = client.send_message(
+        QueueUrl='https://sqs.us-east-1.amazonaws.com/321965405476/s3_writer_sqs',
+        MessageBody=("This was sent on: " + time.strftime("%Y-%m%d-%H%M%S") + links_string)
+        )
 
 #breakpoint()
 driver.quit()
